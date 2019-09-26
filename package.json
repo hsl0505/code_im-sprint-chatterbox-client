@@ -4,6 +4,7 @@
   "description": "codestates-immersive-course-sprint",
   "dependencies": {
     "chai": "^4.1.2",
+    "colors": "^1.4.0",
     "eslint": "^5.12.0",
     "husky": "^0.14.3",
     "lint-staged": "^7.2.2",
@@ -14,7 +15,8 @@
     "puppeteer": "^1.12.2"
   },
   "scripts": {
-    "test": "node __test__/getReview.js && mocha __test__/",
+    "test": "node __test__/getReview.js && mocha __test__ --reporter ./reporter.js",
+    "submit": "node ./.airci/submit.js",
     "precommit": "lint-staged",
     "lint": "eslint client/scripts/app.js"
   },
