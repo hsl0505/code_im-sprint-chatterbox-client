@@ -12,8 +12,8 @@ function MyReporter(runner) {
     const { title } = test;
     console.log('\n');
     console.log('----------------------------------------------'.green);
-    console.log('통과 했어요 축하해요!!!!'.bgGreen);
-    console.log(`테스트 이름: ${title}`.bgGreen);
+    console.log('통과 했어요 축하해요!!!!'.bgGreen.black);
+    console.log(`테스트 이름: ${title}`.bgGreen.black);
     console.log('----------------------------------------------'.green);
     console.log('\n');
     passed++;
