@@ -24,7 +24,7 @@ before(async function() {
 // close browser and reset global variables
 after(async function() {
   await global.page.close();
-  global.browser.close();
+  await global.browser.close();
 });
 
 describe('chatterbox client', async function() {
