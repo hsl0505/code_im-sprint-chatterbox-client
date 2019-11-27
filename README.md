@@ -29,6 +29,5 @@
 ## 제출 방법
 
 1. student.json 파일에 필요한 정보를 입력합니다.
-2. REVIEW.md 파일에 이번 Sprint를 마무리하며 review를 작성합니다.
-3. `npm test`를 통해 테스트를 실행 합니다.
-4. `npm run submit`을 통해 코드를 제출 합니다.
+2. `npm test`를 통해 테스트를 실행 합니다.
+3. `npm run submit`을 통해 코드를 제출 합니다.

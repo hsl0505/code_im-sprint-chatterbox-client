@@ -15,7 +15,7 @@
     "puppeteer": "^1.12.2"
   },
   "scripts": {
-    "test": "node __test__/getReview.js && mocha __test__ --reporter ./reporter.js",
+    "test": "mocha __test__ --reporter ./reporter.js",
     "submit": "node ./.airci/submit.js",
     "precommit": "lint-staged",
     "lint": "eslint client/scripts/app.js"
