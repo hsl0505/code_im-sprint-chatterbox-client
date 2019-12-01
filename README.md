@@ -24,7 +24,8 @@
 1. 현재 repo를 자신의 Github으로 fork 합니다.
 2. fork된 repo를 git clone 명령어로 자신의 local 환경으로 다운로드합니다.
 3. Ternimal에 `npm install`을 입력해 dependency들을 설치합니다.
-4. Pair분과 함께 Programming을 하며 재밌게 coding합니다.
+4. `npm install` 시 `npm audit fix` 메세지를 확인하고 `npm audit fix` 를 합니다.
+5. Pair분과 함께 Programming을 하며 재밌게 coding합니다.
 
 ## 제출 방법
 
