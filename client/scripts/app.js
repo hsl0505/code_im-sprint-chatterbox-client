@@ -63,6 +63,12 @@ function createRoomnameOption(arr) {
   }
 
   let elRoomname = document.querySelector("#roomName");
+  let elOptionDefault = document.createElement("option")
+  elOptionDefault.value = "newRoom";
+  elOptionDefault.textContent = "New Room";
+  elOptionDefault.className = "RoomnameOption";
+  elRoomname.appendChild(elOptionDefault);
+
   for (let i = 0; i < arrOfRoomname.length; i++) {
     let elOption = document.createElement("option");
     elOption.value = arrOfRoomname[i];
@@ -80,9 +86,22 @@ function createRoomnameOption(arr) {
  */
 
 function sortByRoomname() {
+  let roomNameInput = document.querySelector('#rommNameInput');
+
+  if(this.value === "newRoom") {
+    roomNameInput.style.display = "block";
+  }
+  else {
+    roomNameInput.style.display = "none";
+  }
+
+
   let elMessageList = document.querySelectorAll(".messageList");
 
   for (let i = 0; elMessageList.length; i++) {
+    // if (this.value === "newRoom") {
+    //   elMessageList[i].style.display = "block";
+    // }
     if (elMessageList[i].dataset.user === this.value) {
       elMessageList[i].style.display = "block";
     } else {
@@ -90,3 +109,37 @@ function sortByRoomname() {
     }
   }
 }
+
+function sendMessage() {
+  let jsonTarget = {};
+  let userInput = document.querySelector("#userInput");
+  let messageInput = document.querySelector("#messageInput");
+  let rommNameInput = document.querySelector("#rommNameInput");
+  jsonTarget["username"] = userInput.value;
+  jsonTarget["text"] = messageInput.value;
+
+  if (document.querySelector("#roomName").value === "newRoom") {
+    jsonTarget["roomname"] = rommNameInput.value;  // 인풋에 넣은것
+  }
+  else {
+    jsonTarget["roomname"] = document.querySelector("#roomName").value  //  현재 선택 되어 있는 value
+  }
+  // { "username": string, "text": string, "roomname": string, }
+
+  fetch(app.server, {
+    method: 'POST',
+    body: JSON.stringify(jsonTarget),
+    headers: {
+      "Content-Type": "application/json",
+    }
+  }).then(response => {
+    return response.json();
+  }).then(json => {
+    return json // 임시로
+  });
+}
+
+let sendBtn = document.querySelector("#sendButton");
+sendBtn.addEventListener("click", sendMessage)
+
+
