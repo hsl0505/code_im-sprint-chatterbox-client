@@ -8,10 +8,27 @@
   <body>
     <div id="main">
       <h1>chatterbox</h1>
-      <!-- Your HTML goes here! -->
+      <!--roomNumber-->
+      <select id="roomName"></select>
+      <!--input-->
+      <input id="clientInput">
+      <!--button-->
+      <button id="sendButton">Send</button>
     </div>
-    <div id="chats"></div>
-    <!-- your scripts -->
+    <div id="chats">
+      <!--template tag(message)-->
+      <ul id="messages">
+      </ul>
+      <template class="messageTemplate">
+        <!--<li username, text></li>-->
+        <li class="messageList">
+          <div class="message">
+            <span class="username"></span>
+            <div class="messageContent"></div>
+          </div>
+        </li>
+      </template>
+    </div>
     <script src="scripts/app.js"></script>
   </body>
 </html>
