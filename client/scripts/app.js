@@ -2,8 +2,7 @@
 
 const app = {
   server: 'http://52.78.206.149:3000/messages',
-
-  init: function() {  
+  init: function() {       // init 함수가 있어야함->처음에 실행
     this.fetch().then(res => showAllMessages.call(this, res));
   },
 
@@ -25,24 +24,22 @@ const app = {
     }).then(response => {
       return response.json();
     }).then(json => {
-      return json 
+      return json;
     });
   },
 
   renderMessage: function(message) { // 1개를 렌더 -> res배열의 각 엘리먼트
     let elMessages = document.querySelector('#chats');
-    // let elmessageTemplate = document.querySelector('.messageTemplate');
     
-    // let elMessage = document.importNode(elmessageTemplate.content, true);
     let elMessage = document.createElement("div");
     elMessage.className = "message";
+
     let elUser = document.createElement("span")
     elUser.className = "username";
-    // let elUser = elMessage.querySelector(".username");
     elUser.textContent = message.username;
+
     let elContent = document.createElement("div")
     elContent.className = "messageContent"
-    // let elContent = elMessage.querySelector(".messageContent");
     elContent.textContent = message.text;
     
     elMessage.appendChild(elUser)
@@ -82,7 +79,7 @@ app.init();
  */
 function showAllMessages(arr) {
   for (let i = 0; i <arr.length ; i++) {
-    this.renderMessage(arr[i])
+    this.renderMessage(arr[i]);
   }
   createRoomnameOption(arr);
 }
@@ -100,7 +97,7 @@ function createRoomnameOption(arr) {
   }
 
   let elRoomname = document.querySelector("#roomName");
-  let elOptionDefault = document.createElement("option")
+  let elOptionDefault = document.createElement("option");
   elOptionDefault.value = "newRoom";
   elOptionDefault.textContent = "New Room";
   elOptionDefault.className = "RoomnameOption";
@@ -116,12 +113,10 @@ function createRoomnameOption(arr) {
   elRoomname.addEventListener('change', showRoomNameInput);
 }
 
-
 /**
  * this.value 와 같은 roomname 가진 message들을 가져온다.
  * 나머지는 display none;
  */
-
 function showRoomNameInput() {
   let roomNameInput = document.querySelector('#rommNameInput'); // 룸 입력창
 
@@ -136,8 +131,10 @@ function showRoomNameInput() {
 }
 
 function filterMessage() {
+  let elRoomname = document.querySelector("#roomName");
 
-  if (this.value === "newRoom") {
+  if (elRoomname.value === "newRoom") {
+    elRoomname.innerHTML = "";
     app.clearMessages();
     app.fetch().then(res => showAllMessages.call(app, res));
   }
@@ -149,9 +146,9 @@ function filterMessage() {
 
 function sameRoomName(res) {
   let elRoomname = document.querySelector("#roomName");
-  for (let i=0; i<res.length; i=i+1) {
+  for (let i = 0; i < res.length; i++) {
     if (res[i].roomname === elRoomname.value) {
-      app.renderMessage(res[i])
+      app.renderMessage(res[i]);
     }
   }
 }
@@ -161,26 +158,34 @@ function sameRoomName(res) {
  * fetch get을 해서
  * 보낸 roomname과 일치하는 메세지들만 표시
  */
-
-
 let sendBtn = document.querySelector("#sendButton");
-
 sendBtn.onclick = function() {
-  app.send(sendMessage())
-
-  let userInput = document.querySelector("#userInput");
-  let messageInput = document.querySelector("#messageInput");
-  let rommNameInput = document.querySelector("#rommNameInput");
-  userInput.value = '';
-  messageInput.value = '';
-  rommNameInput.value = '';
   /**
    * 메시지를 보내고 다시 fetch해서 새로운 메세지를 출력
    */
-  let elRoomname = document.querySelector("#roomName");
-  setTimeout(filterMessage.bind(elRoomname), 100) ;
+  /**
+   * 일단 문제가 setTimeout을 이용했기때문에 bind를 써야했는데,
+   * 그냥 send안에서 실행시키려면 this를 bind해줘야 해서 실행이 바로 되지 않았었습니다.
+   * 그래서 let elRoomname = document.querySelector("#roomName") 을 filterMessage()로 보내고,
+   * 177번 줄처럼 그냥 실행을 시켜주었습니다.
+   * 그리고 input 내용 지우는 것도 같이 포함 시켰습니다.
+  */
+  app.send(sendMessage()).then((res) => {
+    filterMessage();
+
+    let userInput = document.querySelector("#userInput");
+    let messageInput = document.querySelector("#messageInput");
+    let rommNameInput = document.querySelector("#rommNameInput");
+    userInput.value = '';
+    messageInput.value = '';
+    rommNameInput.value = '';
+
+    return res;
+  });
+  // setTimeout(filterMessage.bind(elRoomname), 100) ;
 }
 
+  // { "username": string, "text": string, "roomname": string, }의 형태로 리턴
 function sendMessage() {
   let jsonTarget = {};
   let userInput = document.querySelector("#userInput");
@@ -188,13 +193,12 @@ function sendMessage() {
   let rommNameInput = document.querySelector("#rommNameInput");
   jsonTarget["username"] = userInput.value;
   jsonTarget["text"] = messageInput.value;
-  
+
   if (document.querySelector("#roomName").value === "newRoom") {
     jsonTarget["roomname"] = rommNameInput.value;  // 인풋에 넣은것
   }
   else {
     jsonTarget["roomname"] = document.querySelector("#roomName").value  //  현재 선택 되어 있는 value
   }
-  // { "username": string, "text": string, "roomname": string, }
   return jsonTarget;
 }
