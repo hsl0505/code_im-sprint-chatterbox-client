@@ -1,18 +1,13 @@
 // eslint-disable-next-line
 
-/**
- * method: init, fetch, send
- */
 const app = {
   server: 'http://52.78.206.149:3000/messages',
-  init: function() {       // init 함수가 있어야함->처음에 실행
-    // this.fetch();
-    // showAllMessages(this.fetch()); // 배열
+
+  init: function() {  
     this.fetch().then(res => showAllMessages.call(this, res));
-    // console.log(this.fetch());
   },
 
-  fetch: function() {   // 메세지를 가져온다.
+  fetch: function() { 
     return window.fetch(this.server)
     .then(res => res.json())
     .then(res => {
@@ -20,7 +15,7 @@ const app = {
     });
   },
 
-  send: function(message) {       // 메세지를 보낸다.
+  send: function(message) {
     return window.fetch(this.server, {
       method: 'POST',
       body: JSON.stringify(message),
@@ -30,8 +25,7 @@ const app = {
     }).then(response => {
       return response.json();
     }).then(json => {
-      // console.log(json);
-      return json // 임시로
+      return json 
     });
   },
 
@@ -53,7 +47,7 @@ const app = {
     
     elMessage.appendChild(elUser)
     elMessage.appendChild(elContent)
-    
+
     elMessages.prepend(elMessage);
   },
 
@@ -202,6 +196,5 @@ function sendMessage() {
     jsonTarget["roomname"] = document.querySelector("#roomName").value  //  현재 선택 되어 있는 value
   }
   // { "username": string, "text": string, "roomname": string, }
-  // console.log(jsonTarget["username"], jsonTarget["text"], jsonTarget["roomname"])
   return jsonTarget;
 }
