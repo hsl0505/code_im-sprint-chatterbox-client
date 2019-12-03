@@ -1,15 +1,19 @@
 // eslint-disable-next-line
 const app = {
-  server: 'http://52.78.206.149:3000/messages'
+  server: 'http://52.78.206.149:3000/messages',
+  init : function () {       // inti 함수가 있어야함
+    // fetch example
+      fetch(app.server)
+        .then(res => res.json())
+        .then(res => {
+          // console.log(res);
+          showAllMessages(res);
+        });
+  }
 };
 
-// fetch example
-fetch(app.server)
-  .then(res => res.json())
-  .then(res => {
-    // console.log(res);
-    showAllMessages(res);
-  });
+app.init();
+
 
 /**
  * 서버에 데이터를 요청해서 클라이언트에 보여준다.
@@ -86,10 +90,10 @@ function createRoomnameOption(arr) {
  */
 
 function sortByRoomname() {
-  let roomNameInput = document.querySelector('#rommNameInput');
+  let roomNameInput = document.querySelector('#rommNameInput'); // 룸 입력창
 
   if(this.value === "newRoom") {
-    roomNameInput.style.display = "block";
+    roomNameInput.style.display = "block";  // 보이게
   }
   else {
     roomNameInput.style.display = "none";
@@ -98,17 +102,21 @@ function sortByRoomname() {
 
   let elMessageList = document.querySelectorAll(".messageList");
 
-  for (let i = 0; elMessageList.length; i++) {
-    // if (this.value === "newRoom") {
-    //   elMessageList[i].style.display = "block";
-    // }
-    if (elMessageList[i].dataset.user === this.value) {
+  for (let i = 0; i<elMessageList.length; i++) {
+    if (this.value === "newRoom") {
       elMessageList[i].style.display = "block";
-    } else {
-      elMessageList[i].style.display = "none";
+    }
+    else {
+      if (elMessageList[i].dataset.user === this.value) {
+        elMessageList[i].style.display = "block";
+      } else {
+        elMessageList[i].style.display = "none";
+      }
     }
   }
 }
+
+
 
 function sendMessage() {
   let jsonTarget = {};
@@ -135,6 +143,7 @@ function sendMessage() {
   }).then(response => {
     return response.json();
   }).then(json => {
+    // console.log(json)
     return json // 임시로
   });
 }
