@@ -90,3 +90,20 @@ form input[type=text] {
     background-color: #0090da;
 }
 
+.inputbox {
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+#roomName {
+    width: 35%;
+}
+
+#sendButton {
+    width: 20%;
+}
+
+.message {
+    margin-bottom: 20px;
+    border-bottom: 2px solid gray;
+}

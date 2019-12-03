@@ -9,27 +9,16 @@
     <div id="main">
       <h1>chatterbox</h1>
       <!--roomNumber-->
-      <select id="roomName"></select>
+      <select id="roomName" class="inputbox"></select>
       <!--input-->
-      <input id="rommNameInput">  
-      <input id="userInput">
-      <input id="messageInput">
+      <input id="rommNameInput" class="inputbox" placeholder="Room Name을 입력하세요">  
+      <input id="userInput" class="inputbox" placeholder="User Name을 입력하세요">
+      <input id="messageInput" class="inputbox" placeholder="Message를 입력하세요">
       <!--button-->
-      <button id="sendButton">Send</button>
+      <button id="sendButton" class="inputbox">Send</button>
     </div>
     <div id="chats">
       <!--template tag(message)-->
-      <ul id="messages">
-      </ul>
-      <template class="messageTemplate">
-        <!--<li username, text></li>-->
-        <li class="messageList">
-          <div class="message">
-            <span class="username"></span>
-            <div class="messageContent"></div>
-          </div>
-        </li>
-      </template>
     </div>
     <script src="scripts/app.js"></script>
   </body>

@@ -6,20 +6,22 @@
 const app = {
   server: 'http://52.78.206.149:3000/messages',
   init: function() {       // init 함수가 있어야함->처음에 실행
-    this.fetch();
+    // this.fetch();
+    // showAllMessages(this.fetch()); // 배열
+    this.fetch().then(res => showAllMessages.call(this, res));
+    // console.log(this.fetch());
   },
 
-  fetch: function() {      // 메세지를 가져온다.
-    fetch(app.server)
+  fetch: function() {   // 메세지를 가져온다.
+    return window.fetch(this.server)
     .then(res => res.json())
     .then(res => {
-      // console.log(res);
-      showAllMessages(res);
+      return res;
     });
   },
 
   send: function(message) {       // 메세지를 보낸다.
-    fetch(app.server, {
+    return window.fetch(this.server, {
       method: 'POST',
       body: JSON.stringify(message),
       headers: {
@@ -31,8 +33,38 @@ const app = {
       // console.log(json);
       return json // 임시로
     });
+  },
+
+  renderMessage: function(message) { // 1개를 렌더 -> res배열의 각 엘리먼트
+    let elMessages = document.querySelector('#chats');
+    // let elmessageTemplate = document.querySelector('.messageTemplate');
+    
+    // let elMessage = document.importNode(elmessageTemplate.content, true);
+    let elMessage = document.createElement("div");
+    elMessage.className = "message";
+    let elUser = document.createElement("span")
+    elUser.className = "username";
+    // let elUser = elMessage.querySelector(".username");
+    elUser.textContent = message.username;
+    let elContent = document.createElement("div")
+    elContent.className = "messageContent"
+    // let elContent = elMessage.querySelector(".messageContent");
+    elContent.textContent = message.text;
+    
+    elMessage.appendChild(elUser)
+    elMessage.appendChild(elContent)
+    
+    elMessages.prepend(elMessage);
+  },
+
+  clearMessages: function() {
+    let elMessages = document.querySelector('#chats');
+    elMessages.innerHTML='';
   }
 };
+
+app.init();
+
 
 /**
  * 서버에 데이터를 요청해서 클라이언트에 보여준다.
@@ -55,25 +87,8 @@ const app = {
  * 만약 roomname.value가 newRoom이 아니라면 roomname.value의 메세지만 show
  */
 function showAllMessages(arr) {
-  let elMessages = document.querySelector('#messages');
-  let elmessageTemplate = document.querySelector('.messageTemplate');
-  // let elroomName = document.querySelector("#roomName");
-  
-  // if (elroomName.value !== 'newRoom') {
-
-  // }
-
-  for (let i = arr.length-1; i >= 0; i--) {
-    let elMessage = document.importNode(elmessageTemplate.content, true);
-
-    let elUser = elMessage.querySelector(".username");
-    elUser.textContent = arr[i].username;
-    let elContent = elMessage.querySelector(".messageContent");
-    elContent.textContent = arr[i].text;
-    let elMessageList = elMessage.querySelector(".messageList");
-    elMessageList.dataset.user = arr[i].roomname;
-
-    elMessages.appendChild(elMessage);
+  for (let i = 0; i <arr.length ; i++) {
+    this.renderMessage(arr[i])
   }
   createRoomnameOption(arr);
 }
@@ -104,7 +119,7 @@ function createRoomnameOption(arr) {
     elOption.className = "RoomnameOption";
     elRoomname.appendChild(elOption);
   }
-  elRoomname.addEventListener('change', sortByRoomname);
+  elRoomname.addEventListener('change', showRoomNameInput);
 }
 
 
@@ -113,7 +128,7 @@ function createRoomnameOption(arr) {
  * 나머지는 display none;
  */
 
-function sortByRoomname() {
+function showRoomNameInput() {
   let roomNameInput = document.querySelector('#rommNameInput'); // 룸 입력창
 
   if(this.value === "newRoom") {
@@ -127,26 +142,51 @@ function sortByRoomname() {
 }
 
 function filterMessage() {
-  let elMessageList = document.querySelectorAll(".messageList");
 
-  for (let i = 0; i < elMessageList.length; i++) {
-    if (this.value === "newRoom") {
-      elMessageList[i].style.display = "block";
-    }
-    else {
-      if (elMessageList[i].dataset.user === this.value) {
-        elMessageList[i].style.display = "block";
-      } else {
-        elMessageList[i].style.display = "none";
-      }
+  if (this.value === "newRoom") {
+    app.clearMessages();
+    app.fetch().then(res => showAllMessages.call(app, res));
+  }
+  else {
+    app.clearMessages();
+    app.fetch().then(res => sameRoomName(res));
+  }
+}
+
+function sameRoomName(res) {
+  let elRoomname = document.querySelector("#roomName");
+  for (let i=0; i<res.length; i=i+1) {
+    if (res[i].roomname === elRoomname.value) {
+      app.renderMessage(res[i])
     }
   }
 }
+
 /**
  * 메세지를 보낸 후,
  * fetch get을 해서
  * 보낸 roomname과 일치하는 메세지들만 표시
  */
+
+
+let sendBtn = document.querySelector("#sendButton");
+
+sendBtn.onclick = function() {
+  app.send(sendMessage())
+
+  let userInput = document.querySelector("#userInput");
+  let messageInput = document.querySelector("#messageInput");
+  let rommNameInput = document.querySelector("#rommNameInput");
+  userInput.value = '';
+  messageInput.value = '';
+  rommNameInput.value = '';
+  /**
+   * 메시지를 보내고 다시 fetch해서 새로운 메세지를 출력
+   */
+  let elRoomname = document.querySelector("#roomName");
+  setTimeout(filterMessage.bind(elRoomname), 100) ;
+}
+
 function sendMessage() {
   let jsonTarget = {};
   let userInput = document.querySelector("#userInput");
@@ -165,19 +205,3 @@ function sendMessage() {
   // console.log(jsonTarget["username"], jsonTarget["text"], jsonTarget["roomname"])
   return jsonTarget;
 }
-
-let sendBtn = document.querySelector("#sendButton");
-sendBtn.onclick = function() {
-  app.send(sendMessage());
-  let userInput = document.querySelector("#userInput");
-  let messageInput = document.querySelector("#messageInput");
-  let rommNameInput = document.querySelector("#rommNameInput");
-  userInput.value = '';
-  messageInput.value = '';
-  rommNameInput.value = '';
-  /**
-   * 메시지를 보내고 다시 fetch해서 새로운 메세지를 출력
-   */
-
-}
-app.init();
